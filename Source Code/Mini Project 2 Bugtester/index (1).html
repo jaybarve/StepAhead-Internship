@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BugPocket — Earn Money Testing Apps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050810;
+  --bg2: #080c18;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --blue: #3B82F6;
+  --blue2: #60A5FA;
+  --cyan: #06B6D4;
+  --purple: #8B5CF6;
+  --purple2: #A78BFA;
+  --pink: #EC4899;
+  --green: #10B981;
+  --amber: #F59E0B;
+  --red: #EF4444;
+  --text: #F1F5F9;
+  --text2: #94A3B8;
+  --text3: #64748B;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --glow-blue: 0 0 40px rgba(59,130,246,0.3);
+  --glow-purple: 0 0 40px rgba(139,92,246,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4,h5{font-family:'Syne',sans-serif;font-weight:700;line-height:1.2}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+
+/* GLASS */
+.glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius)}
+.glass-strong{background:rgba(255,255,255,0.07);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid var(--border2);border-radius:var(--radius)}
+
+/* PAGES */
+.page{display:none;min-height:100vh;animation:fadeIn 0.4s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.25s ease;text-decoration:none;letter-spacing:0.01em}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(59,130,246,0.5)}
+.btn-ghost{background:var(--surface);border:1px solid var(--border2);color:var(--text)}
+.btn-ghost:hover{background:var(--surface2);border-color:rgba(255,255,255,0.25);transform:translateY(-1px)}
+.btn-sm{padding:7px 16px;font-size:13px}
+.btn-danger{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#F87171}
+.btn-success{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);color:#34D399}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:12px;font-weight:600;letter-spacing:0.02em}
+.badge-blue{background:rgba(59,130,246,0.15);color:var(--blue2);border:1px solid rgba(59,130,246,0.25)}
+.badge-purple{background:rgba(139,92,246,0.15);color:var(--purple2);border:1px solid rgba(139,92,246,0.25)}
+.badge-green{background:rgba(16,185,129,0.15);color:#34D399;border:1px solid rgba(16,185,129,0.25)}
+.badge-red{background:rgba(239,68,68,0.15);color:#F87171;border:1px solid rgba(239,68,68,0.25)}
+.badge-amber{background:rgba(245,158,11,0.15);color:#FCD34D;border:1px solid rgba(245,158,11,0.25)}
+.badge-cyan{background:rgba(6,182,212,0.15);color:#67E8F9;border:1px solid rgba(6,182,212,0.25)}
+
+/* SIDEBAR */
+.app-layout{display:flex;min-height:100vh}
+.sidebar{width:64px;background:rgba(5,8,16,0.95);backdrop-filter:blur(30px);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:8px;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:width 0.3s ease}
+.sidebar:hover{width:200px}
+.sidebar-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#fff;flex-shrink:0;margin-bottom:8px;cursor:pointer}
+.sidebar-item{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s;color:var(--text3);padding:0 10px;overflow:hidden;flex-shrink:0;white-space:nowrap;font-size:13px;font-weight:500}
+.sidebar-item svg{flex-shrink:0;width:20px;height:20px}
+.sidebar-item:hover{background:var(--surface);color:var(--text2);width:172px}
+.sidebar-item.active{background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(139,92,246,0.2));color:var(--blue2);border:1px solid rgba(59,130,246,0.25);width:172px}
+.sidebar:hover .sidebar-item{width:172px}
+.sidebar:not(:hover) .sidebar-item.active{width:40px}
+.sidebar-label{opacity:0;transition:opacity 0.2s;pointer-events:none}
+.sidebar:hover .sidebar-label{opacity:1}
+.main-content{margin-left:64px;flex:1;min-height:100vh}
+
+/* ORBS (decorative) */
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.orb-blue{background:radial-gradient(circle,rgba(59,130,246,0.25),transparent 70%)}
+.orb-purple{background:radial-gradient(circle,rgba(139,92,246,0.2),transparent 70%)}
+.orb-cyan{background:radial-gradient(circle,rgba(6,182,212,0.15),transparent 70%)}
+
+/* CARDS */
+.card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all 0.3s ease}
+.card:hover{border-color:var(--border2);background:rgba(255,255,255,0.05);transform:translateY(-2px)}
+.stat-card{background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.stat-number{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;background:linear-gradient(135deg,#fff,var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* INPUTS */
+.input-group{position:relative;margin-bottom:16px}
+.input-group label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all 0.2s}
+.input:focus{border-color:var(--blue);background:rgba(59,130,246,0.08);box-shadow:0 0 0 3px rgba(59,130,246,0.12)}
+.input::placeholder{color:var(--text3)}
+select.input option{background:#0f1628;color:var(--text)}
+textarea.input{resize:vertical;min-height:100px}
+
+/* TABLES */
+.table{width:100%;border-collapse:collapse}
+.table th{padding:12px 16px;text-align:left;font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border)}
+.table td{padding:14px 16px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.table tr:hover td{background:rgba(255,255,255,0.02)}
+.table tr:last-child td{border-bottom:none}
+
+/* AVATAR */
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+
+/* PROGRESS */
+.progress-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--purple))}
+
+/* NOTIFICATIONS */
+.notif{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:10px}
+.notif-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all 0.3s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#0d1427;border:1px solid var(--border2);border-radius:24px;padding:32px;width:90%;max-width:480px;transform:scale(0.9);transition:transform 0.3s;position:relative}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px;transition:all 0.2s}
+.modal-close:hover{background:var(--surface2)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* TOP NAV for dashboards */
+.topbar{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--border);background:rgba(5,8,16,0.8);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50}
+.topbar-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+
+/* LANDING NAV */
+.landing-nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:4px;padding:8px 12px;background:rgba(5,8,16,0.85);backdrop-filter:blur(30px);border:1px solid var(--border);border-radius:50px;width:min(700px,92vw)}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;background:linear-gradient(135deg,var(--blue2),var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-right:8px;padding:4px 8px;cursor:pointer}
+.nav-links{display:flex;gap:2px;flex:1;justify-content:center}
+.nav-link{padding:7px 16px;border-radius:50px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all 0.2s}
+.nav-link:hover{color:var(--text);background:var(--surface)}
+.nav-actions{display:flex;gap:8px}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:120px 20px 60px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);color:var(--blue2);font-size:13px;font-weight:500;margin-bottom:28px}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+.hero h1{font-size:clamp(42px,7vw,80px);font-weight:800;line-height:1.05;margin-bottom:20px;letter-spacing:-0.02em}
+.gradient-text{background:linear-gradient(135deg,#fff 30%,var(--blue2) 60%,var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:560px;margin:0 auto 40px;line-height:1.6}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-stats{display:flex;gap:40px;justify-content:center;margin-top:60px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;background:linear-gradient(135deg,#fff,var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-label{font-size:13px;color:var(--text3);margin-top:2px}
+
+/* SECTIONS */
+.section{padding:80px 40px;max-width:1100px;margin:0 auto}
+.section-title{font-size:clamp(28px,4vw,40px);text-align:center;margin-bottom:12px}
+.section-sub{color:var(--text2);text-align:center;margin-bottom:52px;font-size:16px}
+
+/* FEATURE CARDS */
+.feature-card{padding:28px;border-radius:var(--radius);border:1px solid var(--border);background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));transition:all 0.3s;cursor:default}
+.feature-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+.feature-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px}
+.feature-card h3{font-size:17px;margin-bottom:8px}
+.feature-card p{color:var(--text2);font-size:14px;line-height:1.6}
+
+/* HOW IT WORKS */
+.step{display:flex;gap:20px;align-items:flex-start;padding:24px;border-radius:var(--radius);background:rgba(255,255,255,0.02);border:1px solid var(--border)}
+.step-num{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;flex-shrink:0}
+
+/* TESTIMONIALS */
+.testi{padding:24px;border-radius:var(--radius);background:rgba(255,255,255,0.03);border:1px solid var(--border)}
+.testi-text{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:16px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:12px}
+
+/* CATEGORIES */
+.cat-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid var(--border);cursor:pointer;transition:all 0.2s;font-size:14px}
+.cat-pill:hover{background:var(--surface2);border-color:var(--border2);transform:translateY(-2px)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;gap:20px;max-width:1100px;margin:0 auto}
+footer a{color:var(--text3);font-size:13px;text-decoration:none;transition:color 0.2s}
+footer a:hover{color:var(--text)}
+
+/* AUTH PAGE */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:20px}
+.auth-card{width:100%;max-width:440px;padding:40px;position:relative;z-index:1}
+.auth-card h2{font-size:26px;margin-bottom:6px}
+.auth-card p{color:var(--text2);font-size:14px;margin-bottom:32px}
+.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.role-option{padding:16px;border-radius:var(--radius-sm);border:2px solid var(--border);cursor:pointer;transition:all 0.2s;text-align:center}
+.role-option.selected{border-color:var(--blue);background:rgba(59,130,246,0.1)}
+.role-option:hover:not(.selected){border-color:var(--border2)}
+.role-option .role-icon{font-size:24px;margin-bottom:6px}
+.role-option .role-name{font-size:13px;font-weight:600}
+
+/* DASHBOARD SECTIONS */
+.dash-section{padding:24px 28px}
+.dash-section-title{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+
+/* TASK CARDS */
+.task-card{padding:20px;border-radius:var(--radius);background:rgba(255,255,255,0.03);border:1px solid var(--border);transition:all 0.25s;cursor:pointer}
+.task-card:hover{border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.05);transform:translateY(-2px)}
+.task-app{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.app-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.task-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.task-footer{display:flex;align-items:center;justify-content:space-between}
+.payout{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* WALLET */
+.wallet-card{padding:28px;border-radius:20px;background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(139,92,246,0.1));border:1px solid rgba(59,130,246,0.25);position:relative;overflow:hidden}
+.wallet-balance{font-family:'Syne',sans-serif;font-size:42px;font-weight:800}
+.wallet-actions{display:flex;gap:12px;margin-top:20px}
+
+/* LEADERBOARD */
+.lb-row{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:var(--radius-sm);background:rgba(255,255,255,0.02);border:1px solid var(--border);margin-bottom:10px;transition:all 0.2s}
+.lb-row:hover{border-color:var(--border2);background:rgba(255,255,255,0.04)}
+.lb-rank{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;width:36px;text-align:center}
+.lb-xp{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--amber);margin-left:auto}
+.trophy-1{color:#FFD700}
+.trophy-2{color:#C0C0C0}
+.trophy-3{color:#CD7F32}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02)}
+.upload-zone:hover{border-color:rgba(59,130,246,0.5);background:rgba(59,130,246,0.05)}
+.upload-zone.dragging{border-color:var(--blue);background:rgba(59,130,246,0.1)}
+.upload-icon{font-size:32px;margin-bottom:10px}
+
+/* CHART BARS */
+.chart-bar{display:flex;align-items:flex-end;gap:8px;height:100px;padding:0 4px}
+.bar{flex:1;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--blue),rgba(59,130,246,0.3));transition:all 0.3s;cursor:pointer}
+.bar:hover{background:linear-gradient(180deg,var(--purple),rgba(139,92,246,0.3));transform:scaleY(1.05);transform-origin:bottom}
+
+/* SPARKLINE (fake) */
+.sparkline{display:flex;align-items:flex-end;gap:3px;height:32px}
+.spark-bar{width:4px;border-radius:2px;background:rgba(59,130,246,0.5)}
+.spark-bar:last-child{background:var(--blue)}
+
+/* TOGGLE */
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.1);border-radius:12px;transition:0.3s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:0.3s}
+input:checked+.toggle-slider{background:var(--blue)}
+input:checked+.toggle-slider:before{transform:translateX(20px)}
+
+/* ANIMATIONS */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes glow-pulse{0%,100%{opacity:0.4}50%{opacity:0.8}}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.float{animation:float 4s ease-in-out infinite}
+.float-delay{animation:float 4s ease-in-out infinite 1.5s}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .grid-4{grid-template-columns:1fr 1fr}
+  .grid-3{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+  .section{padding:60px 20px}
+  .sidebar{display:none}
+  .main-content{margin-left:0}
+}
+
+/* SUCCESS ANIMATION */
+@keyframes success-pop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.success-icon{animation:success-pop 0.5s ease forwards}
+
+/* GLOW BORDER */
+.glow-border{box-shadow:0 0 0 1px rgba(59,130,246,0.3),0 0 20px rgba(59,130,246,0.1)}
+.glow-border-purple{box-shadow:0 0 0 1px rgba(139,92,246,0.3),0 0 20px rgba(139,92,246,0.1)}
+
+/* STATUS DOTS */
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot-green{background:#10B981;box-shadow:0 0 6px rgba(16,185,129,0.6)}
+.dot-amber{background:var(--amber);box-shadow:0 0 6px rgba(245,158,11,0.6)}
+.dot-red{background:var(--red);box-shadow:0 0 6px rgba(239,68,68,0.6)}
+
+/* COMPANY DASHBOARD SPECIFICS */
+.campaign-card{padding:20px;border-radius:var(--radius);background:rgba(255,255,255,0.03);border:1px solid var(--border);margin-bottom:12px}
+.campaign-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+
+/* MINI CHART */
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:48px}
+.mini-bar{flex:1;border-radius:3px 3px 0 0;min-height:4px}
+
+/* SCROLLABLE CONTENT */
+.scroll-content{overflow-y:auto;max-height:calc(100vh - 60px)}
+</style>
+</head>
+<body>
+
+<!-- ========================= LANDING PAGE ========================= -->
+<div id="page-landing" class="page active">
+  <!-- Floating NAV -->
+  <nav class="landing-nav">
+    <span class="nav-logo" onclick="showPage('landing')">BugPocket</span>
+    <div class="nav-links">
+      <span class="nav-link">How It Works</span>
+      <span class="nav-link">For Testers</span>
+      <span class="nav-link">For Companies</span>
+      <span class="nav-link">Leaderboard</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="showPage('login')">Log in</button>
+      <button class="btn btn-primary btn-sm" onclick="showPage('signup')">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <!-- Floating orbs -->
+    <div class="orb orb-blue" style="width:600px;height:600px;top:-100px;left:-200px;animation:glow-pulse 4s infinite"></div>
+    <div class="orb orb-purple" style="width:500px;height:500px;bottom:0;right:-100px;animation:glow-pulse 5s infinite 1s"></div>
+    <div class="orb orb-cyan" style="width:300px;height:300px;top:30%;left:60%;animation:glow-pulse 3.5s infinite 0.5s"></div>
+
+    <!-- Floating glass cards (decorative) -->
+    <div class="glass float" style="position:absolute;top:120px;left:8%;padding:14px 18px;display:flex;align-items:center;gap:10px;width:220px;z-index:1;border-color:rgba(16,185,129,0.3)">
+      <div style="width:36px;height:36px;background:rgba(16,185,129,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px">💰</div>
+      <div><div style="font-size:11px;color:var(--text3)">Earned today</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#34D399">+₹1,240</div></div>
+    </div>
+    <div class="glass float-delay" style="position:absolute;top:200px;right:8%;padding:14px 18px;display:flex;align-items:center;gap:10px;width:240px;z-index:1;border-color:rgba(139,92,246,0.3)">
+      <div style="width:36px;height:36px;background:rgba(139,92,246,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px">🐛</div>
+      <div><div style="font-size:11px;color:var(--text3)">Bug approved</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">Swiggy — Critical</div></div>
+    </div>
+    <div class="glass float" style="position:absolute;bottom:180px;left:12%;padding:14px 18px;display:flex;align-items:center;gap:10px;width:220px;z-index:1;border-color:rgba(59,130,246,0.3);animation-delay:2s">
+      <div style="width:36px;height:36px;background:rgba(59,130,246,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px">🏆</div>
+      <div><div style="font-size:11px;color:var(--text3)">Rank up!</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px">You're now #8 globally</div></div>
+    </div>
+
+    <div style="position:relative;z-index:1;max-width:800px">
+      <div class="hero-badge">
+        <span>🚀</span>
+        <span>Live Platform — 12,400+ Testers Active</span>
+      </div>
+      <h1>
+        <span class="gradient-text">Earn Money</span><br>By Testing Apps
+      </h1>
+      <p class="hero-sub">Join the next-gen crowd testing platform and get rewarded for finding bugs. Companies pay you to break their software.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" style="font-size:16px;padding:14px 32px" onclick="showPage('signup')">
+          <span>🎯</span> Start Testing
+        </button>
+        <button class="btn btn-ghost" style="font-size:16px;padding:14px 32px" onclick="showPage('signup')">
+          <span>🏢</span> Hire Testers
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">₹2.4Cr+</div><div class="hero-stat-label">Paid to testers</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">48,000+</div><div class="hero-stat-label">Bugs found</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">340+</div><div class="hero-stat-label">Companies trust us</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">12,400+</div><div class="hero-stat-label">Active testers</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <div style="padding:0 40px;max-width:1100px;margin:0 auto">
+    <h2 class="section-title">Why BugPocket?</h2>
+    <p class="section-sub" style="margin-bottom:36px">Everything you need to run or participate in world-class bug bounty campaigns.</p>
+    <div class="grid-3" style="margin-bottom:80px">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.15)">💸</div>
+        <h3>Instant Payouts</h3>
+        <p>Get paid directly to your UPI or bank account within 24 hours of bug approval. No waiting, no hassle.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.15)">🎮</div>
+        <h3>Gamified XP System</h3>
+        <p>Earn XP points, unlock badges, climb leaderboards, and level up your tester profile with every bug found.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.15)">🤖</div>
+        <h3>AI Bug Validation</h3>
+        <p>Our AI pre-screens submissions instantly, so companies get clean reports and testers get faster approvals.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.15)">📱</div>
+        <h3>Mobile & Web Testing</h3>
+        <p>Test iOS apps, Android apps, websites, web apps — all from one unified platform with native tooling.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(6,182,212,0.15)">🔒</div>
+        <h3>Secure NDA Workflow</h3>
+        <p>Every campaign is protected with e-signed NDAs, ensuring companies can confidently test unreleased products.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(236,72,153,0.15)">📊</div>
+        <h3>Real-Time Analytics</h3>
+        <p>Detailed dashboards for companies to track bug trends, tester activity, and campaign performance live.</p>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub" style="margin-bottom:36px">From signup to payday in four simple steps.</p>
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:680px;margin:0 auto 80px">
+      <div class="step">
+        <div class="step-num" style="background:rgba(59,130,246,0.15);color:var(--blue2)">01</div>
+        <div><h4 style="margin-bottom:4px;font-size:15px">Sign Up & Build Your Profile</h4><p style="color:var(--text2);font-size:13px">Create a tester profile, take skill assessments, and get matched with relevant testing campaigns automatically.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(139,92,246,0.15);color:var(--purple2)">02</div>
+        <div><h4 style="margin-bottom:4px;font-size:15px">Join Live Campaigns</h4><p style="color:var(--text2);font-size:13px">Browse open tasks, pick apps you want to test, and start breaking things — we'll tell you what to look for.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(16,185,129,0.15);color:#34D399">03</div>
+        <div><h4 style="margin-bottom:4px;font-size:15px">Submit Bugs with Evidence</h4><p style="color:var(--text2);font-size:13px">File detailed bug reports with screenshots, videos, and repro steps using our gorgeous in-app submission tool.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:rgba(245,158,11,0.15);color:#FCD34D">04</div>
+        <div><h4 style="margin-bottom:4px;font-size:15px">Get Paid Instantly</h4><p style="color:var(--text2);font-size:13px">Once approved, money hits your wallet. Withdraw via UPI, IMPS, or NEFT anytime. Build a second income doing what you love.</p></div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <h2 class="section-title">Testing Categories</h2>
+    <p class="section-sub" style="margin-bottom:36px">We cover every type of software testing you can imagine.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:80px">
+      <span class="cat-pill">📱 Mobile Apps</span><span class="cat-pill">🌐 Web Apps</span><span class="cat-pill">🛒 E-Commerce</span><span class="cat-pill">🎮 Games</span><span class="cat-pill">💳 Fintech</span><span class="cat-pill">🏥 Health Tech</span><span class="cat-pill">🔐 Security</span><span class="cat-pill">⚡ Performance</span><span class="cat-pill">♿ Accessibility</span><span class="cat-pill">🌍 Localization</span><span class="cat-pill">🤖 AI Products</span><span class="cat-pill">📡 APIs</span>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <h2 class="section-title">What Testers Say</h2>
+    <p class="section-sub" style="margin-bottom:36px">Real stories from real testers who are earning on BugPocket.</p>
+    <div class="grid-3" style="margin-bottom:80px">
+      <div class="testi">
+        <p class="testi-text">"I made ₹28,000 in my first month while studying for my BTech exams. The best side hustle for CS students, period."</p>
+        <div class="testi-author"><div class="avatar" style="background:rgba(59,130,246,0.2);color:var(--blue2)">AR</div><div><div style="font-size:13px;font-weight:600">Arjun Reddy</div><div style="font-size:12px;color:var(--text3)">CS Student, Hyderabad · ⭐ 4.9</div></div></div>
+      </div>
+      <div class="testi">
+        <p class="testi-text">"Found a critical payment bug in a major fintech app. Got ₹15,000 for that one bug alone. This is life-changing."</p>
+        <div class="testi-author"><div class="avatar" style="background:rgba(16,185,129,0.2);color:#34D399">PS</div><div><div style="font-size:13px;font-weight:600">Priya Sharma</div><div style="font-size:12px;color:var(--text3)">QA Freelancer, Pune · ⭐ 5.0</div></div></div>
+      </div>
+      <div class="testi">
+        <p class="testi-text">"The leaderboard system kept me hooked. I'm now ranked #4 in India and companies approach ME for private campaigns."</p>
+        <div class="testi-author"><div class="avatar" style="background:rgba(139,92,246,0.2);color:var(--purple2)">KM</div><div><div style="font-size:13px;font-weight:600">Karan Mehta</div><div style="font-size:12px;color:var(--text3)">Security Researcher, Mumbai · ⭐ 4.8</div></div></div>
+      </div>
+    </div>
+
+    <!-- COMPANIES -->
+    <div style="text-align:center;padding:60px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:80px">
+      <p style="color:var(--text3);font-size:13px;margin-bottom:28px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600">Trusted by leading companies</p>
+      <div style="display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;opacity:0.5;filter:grayscale(1)">
+        <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Swiggy</span>
+        <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Razorpay</span>
+        <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">CRED</span>
+        <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Meesho</span>
+        <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Zepto</span>
+        <span style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">PhonePe</span>
+      </div>
+    </div>
+
+    <!-- CTA SECTION -->
+    <div style="text-align:center;padding:60px 20px;position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(139,92,246,0.1));border:1px solid rgba(139,92,246,0.2);margin-bottom:80px">
+      <div class="orb orb-blue" style="width:400px;height:400px;top:-150px;left:-100px"></div>
+      <div class="orb orb-purple" style="width:400px;height:400px;bottom:-150px;right:-100px"></div>
+      <div style="position:relative;z-index:1">
+        <h2 style="font-size:36px;margin-bottom:12px">Ready to Start Earning?</h2>
+        <p style="color:var(--text2);margin-bottom:32px;font-size:16px">Join 12,400+ testers already making money on BugPocket. No experience needed to start.</p>
+        <button class="btn btn-primary" style="font-size:16px;padding:16px 40px" onclick="showPage('signup')">Create Free Account →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="border-top:1px solid var(--border);padding:32px 40px;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;background:linear-gradient(135deg,var(--blue2),var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">BugPocket</span>
+    <div style="display:flex;gap:24px">
+      <a href="#" style="color:var(--text3);font-size:13px;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">Privacy</a>
+      <a href="#" style="color:var(--text3);font-size:13px;text-decoration:none" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">Terms</a>
+      <a href="#" style="color:var(--text3);font-size:13px;text-decoration:none" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">Blog</a>
+      <a href="#" style="color:var(--text3);font-size:13px;text-decoration:none" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">Contact</a>
+    </div>
+    <span style="color:var(--text3);font-size:12px">© 2025 BugPocket Inc. Made with 🐛 in India.</span>
+  </div>
+</div>
+
+<!-- ========================= LOGIN PAGE ========================= -->
+<div id="page-login" class="page">
+  <div class="auth-page">
+    <div class="orb orb-blue" style="width:500px;height:500px;top:-100px;left:-150px"></div>
+    <div class="orb orb-purple" style="width:400px;height:400px;bottom:-100px;right:-100px"></div>
+    <div class="auth-card glass-strong" style="z-index:1;position:relative">
+      <div style="text-align:center;margin-bottom:28px">
+        <div onclick="showPage('landing')" style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;background:linear-gradient(135deg,var(--blue2),var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;margin-bottom:16px">BugPocket</div>
+        <h2>Welcome back</h2>
+        <p style="color:var(--text2);font-size:14px;margin-top:4px">Sign in to your account</p>
+      </div>
+      <div class="input-group"><label>Email address</label><input type="email" class="input" placeholder="you@example.com" value="arjun@example.com"></div>
+      <div class="input-group"><label>Password</label><input type="password" class="input" placeholder="••••••••" value="password123"></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:20px"><span style="font-size:13px;color:var(--blue2);cursor:pointer">Forgot password?</span></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="doLogin()">Sign In →</button>
+      <div class="divider"></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:13px">🔵 Google</button>
+        <button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:13px">📘 GitHub</button>
+      </div>
+      <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--text3)">Don't have an account? <span style="color:var(--blue2);cursor:pointer" onclick="showPage('signup')">Sign up free</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= SIGNUP PAGE ========================= -->
+<div id="page-signup" class="page">
+  <div class="auth-page">
+    <div class="orb orb-purple" style="width:500px;height:500px;top:-100px;right:-150px"></div>
+    <div class="orb orb-cyan" style="width:400px;height:400px;bottom:-100px;left:-100px"></div>
+    <div class="auth-card glass-strong" style="z-index:1;position:relative;max-width:480px">
+      <div style="text-align:center;margin-bottom:28px">
+        <div onclick="showPage('landing')" style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;background:linear-gradient(135deg,var(--blue2),var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;margin-bottom:16px">BugPocket</div>
+        <h2>Create your account</h2>
+        <p style="color:var(--text2);font-size:14px;margin-top:4px">Start earning in minutes</p>
+      </div>
+      <p style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px">I am joining as…</p>
+      <div class="role-selector">
+        <div class="role-option selected" id="role-tester" onclick="selectRole('tester')">
+          <div class="role-icon">🐛</div>
+          <div class="role-name">Tester</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">Find bugs, earn cash</div>
+        </div>
+        <div class="role-option" id="role-company" onclick="selectRole('company')">
+          <div class="role-icon">🏢</div>
+          <div class="role-name">Company</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">Test your product</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="input-group"><label>First name</label><input type="text" class="input" placeholder="Arjun"></div>
+        <div class="input-group"><label>Last name</label><input type="text" class="input" placeholder="Reddy"></div>
+      </div>
+      <div class="input-group"><label>Email address</label><input type="email" class="input" placeholder="you@example.com"></div>
+      <div class="input-group"><label>Password</label><input type="password" class="input" placeholder="Create a strong password"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;margin-top:4px" onclick="doSignup()">Create Account →</button>
+      <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--text3)">By signing up you agree to our <span style="color:var(--blue2)">Terms</span> and <span style="color:var(--blue2)">Privacy Policy</span></p>
+      <p style="text-align:center;margin-top:10px;font-size:13px;color:var(--text3)">Already have an account? <span style="color:var(--blue2);cursor:pointer" onclick="showPage('login')">Sign in</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= TESTER DASHBOARD ========================= -->
+<div id="page-tester" class="page">
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-logo" onclick="showPage('landing')">BP</div>
+      <div class="sidebar-item active" onclick="setActiveNav(this,'tester')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="sidebar-label">Dashboard</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('bug-submit')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+        <span class="sidebar-label">Submit Bug</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('wallet')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        <span class="sidebar-label">Wallet</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('leaderboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        <span class="sidebar-label">Leaderboard</span>
+      </div>
+      <div class="sidebar-item" style="margin-top:auto" onclick="showPage('landing')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <span class="sidebar-label">Logout</span>
+      </div>
+    </nav>
+
+    <div class="main-content scroll-content">
+      <!-- Topbar -->
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">Tester Dashboard</div>
+          <div style="font-size:12px;color:var(--text3)">Welcome back, Arjun 👋</div>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge badge-green"><span class="status-dot dot-green"></span>Active</span>
+          <div style="position:relative;cursor:pointer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <span style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;background:var(--red);border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700">3</span>
+          </div>
+          <div class="avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;cursor:pointer;width:34px;height:34px;font-size:12px">AR</div>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="dash-section">
+        <div class="grid-4">
+          <div class="stat-card glow-border" style="border-color:rgba(59,130,246,0.2)">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Total Earnings</div>
+            <div class="stat-number">₹42,840</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:6px"><span style="font-size:12px;color:#34D399">↑ +₹3,200 this week</span></div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Active Tests</div>
+            <div class="stat-number" style="background:linear-gradient(135deg,#fff,var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">4</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:6px">2 deadlines this week</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Bugs Found</div>
+            <div class="stat-number" style="background:linear-gradient(135deg,#fff,#34D399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">183</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:6px">94% approval rate</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Global Rank</div>
+            <div class="stat-number" style="background:linear-gradient(135deg,#FFD700,var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">#8</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:6px">Top 0.1% in India</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- XP / Level Bar -->
+      <div class="dash-section" style="padding-top:0">
+        <div class="glass" style="padding:16px 20px;display:flex;align-items:center;gap:16px">
+          <div style="font-size:28px">🏅</div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Level 14 — Bug Hunter Elite</span><span style="font-size:12px;color:var(--text3)">8,420 / 10,000 XP</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:84%"></div></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:var(--text3)">Next level</div>
+            <div style="font-size:13px;font-weight:700;color:var(--purple2)">Master Tester</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks + Activity -->
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:20px;padding:0 28px 28px">
+        <!-- Available Tasks -->
+        <div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+            Available Tasks <span class="badge badge-blue">12 open</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="task-card" onclick="showPage('bug-submit')">
+              <div class="task-app">
+                <div class="app-icon" style="background:rgba(255,82,82,0.15)">🛒</div>
+                <div><div style="font-weight:600;font-size:14px">Swiggy Instamart</div><div style="font-size:12px;color:var(--text3)">iOS + Android · Payments & Cart</div></div>
+                <div class="payout" style="margin-left:auto">₹8,000</div>
+              </div>
+              <div class="task-meta">
+                <span class="badge badge-red">Critical</span>
+                <span class="badge badge-amber">2 days left</span>
+                <span class="badge badge-purple">Functional</span>
+              </div>
+              <div class="task-footer">
+                <div style="font-size:12px;color:var(--text3)">42 testers joined · 18 bugs found</div>
+                <button class="btn btn-primary btn-sm">Join Task</button>
+              </div>
+            </div>
+            <div class="task-card" onclick="showPage('bug-submit')">
+              <div class="task-app">
+                <div class="app-icon" style="background:rgba(59,130,246,0.15)">💳</div>
+                <div><div style="font-weight:600;font-size:14px">Razorpay Dashboard</div><div style="font-size:12px;color:var(--text3)">Web App · UX & Accessibility</div></div>
+                <div class="payout" style="margin-left:auto">₹5,500</div>
+              </div>
+              <div class="task-meta">
+                <span class="badge badge-amber">Medium</span>
+                <span class="badge badge-blue">5 days left</span>
+                <span class="badge badge-cyan">UX Bug</span>
+              </div>
+              <div class="task-footer">
+                <div style="font-size:12px;color:var(--text3)">28 testers joined · 9 bugs found</div>
+                <button class="btn btn-primary btn-sm">Join Task</button>
+              </div>
+            </div>
+            <div class="task-card" onclick="showPage('bug-submit')">
+              <div class="task-app">
+                <div class="app-icon" style="background:rgba(16,185,129,0.15)">🏦</div>
+                <div><div style="font-weight:600;font-size:14px">CRED App v4.2</div><div style="font-size:12px;color:var(--text3)">Android · New Feature Testing</div></div>
+                <div class="payout" style="margin-left:auto">₹12,000</div>
+              </div>
+              <div class="task-meta">
+                <span class="badge badge-red">High</span>
+                <span class="badge badge-amber">1 day left</span>
+                <span class="badge badge-green">Regression</span>
+              </div>
+              <div class="task-footer">
+                <div style="font-size:12px;color:var(--text3)">89 testers joined · 34 bugs found</div>
+                <button class="btn btn-ghost btn-sm">Full</button>
+              </div>
+            </div>
+            <div class="task-card" onclick="showPage('bug-submit')">
+              <div class="task-app">
+                <div class="app-icon" style="background:rgba(139,92,246,0.15)">🚀</div>
+                <div><div style="font-weight:600;font-size:14px">Zepto v5.1 Beta</div><div style="font-size:12px;color:var(--text3)">iOS · Performance & Crash Testing</div></div>
+                <div class="payout" style="margin-left:auto">₹6,200</div>
+              </div>
+              <div class="task-meta">
+                <span class="badge badge-amber">Medium</span>
+                <span class="badge badge-blue">7 days left</span>
+                <span class="badge badge-purple">Performance</span>
+              </div>
+              <div class="task-footer">
+                <div style="font-size:12px;color:var(--text3)">15 testers joined · 5 bugs found</div>
+                <button class="btn btn-primary btn-sm">Join Task</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <!-- Wallet Preview -->
+          <div class="wallet-card">
+            <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Wallet Balance</div>
+            <div class="wallet-balance">₹42,840</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px">+ ₹1,600 pending approval</div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:14px" onclick="showPage('wallet')">Withdraw →</button>
+          </div>
+
+          <!-- Badges -->
+          <div class="card">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px">Your Badges</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <span title="First Bug" style="font-size:22px;cursor:pointer">🐛</span>
+              <span title="Speed Runner" style="font-size:22px;cursor:pointer">⚡</span>
+              <span title="Critical Finder" style="font-size:22px;cursor:pointer">🔥</span>
+              <span title="100 Bugs" style="font-size:22px;cursor:pointer">💯</span>
+              <span title="Top 10" style="font-size:22px;cursor:pointer">🏆</span>
+              <span title="Verified Pro" style="font-size:22px;cursor:pointer">✅</span>
+              <span title="Security Ace" style="font-size:22px;cursor:pointer">🔒</span>
+              <span title="Locked" style="font-size:22px;cursor:pointer;opacity:0.3;filter:grayscale(1)">👑</span>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px">Recent Activity</div>
+            <div class="notif"><span class="notif-dot" style="background:var(--green)"></span><div><div style="font-size:13px;font-weight:500">Bug Approved ✅</div><div style="font-size:12px;color:var(--text3)">Swiggy — Checkout crash · +₹2,000</div><div style="font-size:11px;color:var(--text3);margin-top:2px">2 hours ago</div></div></div>
+            <div class="notif"><span class="notif-dot" style="background:var(--blue)"></span><div><div style="font-size:13px;font-weight:500">New Campaign 🎯</div><div style="font-size:12px;color:var(--text3)">CRED — ₹12,000 total pool</div><div style="font-size:11px;color:var(--text3);margin-top:2px">5 hours ago</div></div></div>
+            <div class="notif"><span class="notif-dot" style="background:var(--amber)"></span><div><div style="font-size:13px;font-weight:500">Rank Up 🏅</div><div style="font-size:12px;color:var(--text3)">You moved from #9 to #8 globally!</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Yesterday</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= COMPANY DASHBOARD ========================= -->
+<div id="page-company" class="page">
+  <div class="app-layout">
+    <nav class="sidebar">
+      <div class="sidebar-logo" onclick="showPage('landing')">BP</div>
+      <div class="sidebar-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="sidebar-label">Overview</span>
+      </div>
+      <div class="sidebar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span class="sidebar-label">Campaigns</span>
+      </div>
+      <div class="sidebar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+        <span class="sidebar-label">Bug Reports</span>
+      </div>
+      <div class="sidebar-item" onclick="showPage('wallet')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        <span class="sidebar-label">Billing</span>
+      </div>
+      <div class="sidebar-item" style="margin-top:auto" onclick="showPage('landing')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <span class="sidebar-label">Logout</span>
+      </div>
+    </nav>
+    <div class="main-content scroll-content">
+      <div class="topbar">
+        <div><div class="topbar-title">Company Dashboard</div><div style="font-size:12px;color:var(--text3)">Swiggy Technologies Pvt Ltd</div></div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary btn-sm" onclick="openCampaignModal()">+ New Campaign</button>
+          <div class="avatar" style="background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;cursor:pointer;width:34px;height:34px;font-size:12px">SW</div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="grid-4">
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Active Campaigns</div><div class="stat-number">3</div><div style="font-size:12px;color:#34D399;margin-top:6px">↑ 1 new this week</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Bugs Reported</div><div class="stat-number" style="background:linear-gradient(135deg,#fff,var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">247</div><div style="font-size:12px;color:var(--text3);margin-top:6px">34 critical</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Testers Engaged</div><div class="stat-number" style="background:linear-gradient(135deg,#fff,var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">184</div><div style="font-size:12px;color:var(--text3);margin-top:6px">Across all campaigns</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Spent This Month</div><div class="stat-number" style="background:linear-gradient(135deg,#fff,var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">₹1.8L</div><div style="font-size:12px;color:var(--text3);margin-top:6px">Budget: ₹2.5L</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;padding:0 28px 20px">
+        <!-- Active Campaigns -->
+        <div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:14px">Active Campaigns</div>
+          <div class="campaign-card">
+            <div class="campaign-header">
+              <div><div style="font-weight:600;font-size:14px">Swiggy Instamart v3.0</div><div style="font-size:12px;color:var(--text3)">iOS · Android · Web — Full regression</div></div>
+              <span class="badge badge-green"><span class="status-dot dot-green"></span>Live</span>
+            </div>
+            <div style="display:flex;gap:24px;margin-bottom:12px">
+              <div><div style="font-size:11px;color:var(--text3)">Budget</div><div style="font-size:14px;font-weight:700">₹80,000</div></div>
+              <div><div style="font-size:11px;color:var(--text3)">Spent</div><div style="font-size:14px;font-weight:700;color:var(--amber)">₹52,400</div></div>
+              <div><div style="font-size:11px;color:var(--text3)">Bugs</div><div style="font-size:14px;font-weight:700;color:var(--red)">184</div></div>
+              <div><div style="font-size:11px;color:var(--text3)">Testers</div><div style="font-size:14px;font-weight:700">89</div></div>
+            </div>
+            <div class="progress-bar" style="margin-bottom:8px"><div class="progress-fill" style="width:65%;background:linear-gradient(90deg,var(--amber),var(--red))"></div></div>
+            <div style="font-size:11px;color:var(--text3)">65% of budget used · 3 days remaining</div>
+          </div>
+          <div class="campaign-card">
+            <div class="campaign-header">
+              <div><div style="font-weight:600;font-size:14px">Swiggy Pay Security Audit</div><div style="font-size:12px;color:var(--text3)">Web · Payment security testing</div></div>
+              <span class="badge badge-blue">Reviewing</span>
+            </div>
+            <div style="display:flex;gap:24px;margin-bottom:12px">
+              <div><div style="font-size:11px;color:var(--text3)">Budget</div><div style="font-size:14px;font-weight:700">₹40,000</div></div>
+              <div><div style="font-size:11px;color:var(--text3)">Spent</div><div style="font-size:14px;font-weight:700;color:var(--amber)">₹18,200</div></div>
+              <div><div style="font-size:11px;color:var(--text3)">Bugs</div><div style="font-size:14px;font-weight:700;color:var(--red)">43</div></div>
+              <div><div style="font-size:11px;color:var(--text3)">Testers</div><div style="font-size:14px;font-weight:700">34</div></div>
+            </div>
+            <div class="progress-bar" style="margin-bottom:8px"><div class="progress-fill" style="width:45%"></div></div>
+            <div style="font-size:11px;color:var(--text3)">45% of budget used · 8 days remaining</div>
+          </div>
+        </div>
+
+        <!-- Bug Severity Chart + Recent -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div style="font-size:14px;font-weight:700;margin-bottom:16px">Bug Severity Breakdown</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text3)">Critical</span><span style="font-weight:600;color:#F87171">34</span></div><div class="progress-bar"><div class="progress-fill" style="width:28%;background:linear-gradient(90deg,#EF4444,#F87171)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text3)">High</span><span style="font-weight:600;color:var(--amber)">78</span></div><div class="progress-bar"><div class="progress-fill" style="width:63%;background:linear-gradient(90deg,var(--amber),#FCD34D)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text3)">Medium</span><span style="font-weight:600;color:var(--blue2)">95</span></div><div class="progress-bar"><div class="progress-fill" style="width:77%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text3)">Low</span><span style="font-weight:600;color:#34D399">40</span></div><div class="progress-bar"><div class="progress-fill" style="width:32%;background:linear-gradient(90deg,var(--green),#34D399)"></div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px">Recent Bug Reports</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(239,68,68,0.05);border-radius:8px;border:1px solid rgba(239,68,68,0.15)"><span class="badge badge-red" style="font-size:10px">Critical</span><span style="font-size:12px;flex:1">Checkout crash on COD</span><span style="font-size:11px;color:var(--text3)">2h ago</span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(245,158,11,0.05);border-radius:8px;border:1px solid rgba(245,158,11,0.15)"><span class="badge badge-amber" style="font-size:10px">High</span><span style="font-size:12px;flex:1">OTP not sent on retry</span><span style="font-size:11px;color:var(--text3)">4h ago</span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(59,130,246,0.05);border-radius:8px;border:1px solid rgba(59,130,246,0.15)"><span class="badge badge-blue" style="font-size:10px">Medium</span><span style="font-size:12px;flex:1">UI overlap on iOS 17</span><span style="font-size:11px;color:var(--text3)">6h ago</span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(239,68,68,0.05);border-radius:8px;border:1px solid rgba(239,68,68,0.15)"><span class="badge badge-red" style="font-size:10px">Critical</span><span style="font-size:12px;flex:1">Cart total miscalculates discount</span><span style="font-size:11px;color:var(--text3)">8h ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= ADMIN DASHBOARD ========================= -->
+<div id="page-admin" class="page">
+  <div class="app-layout">
+    <nav class="sidebar">
+      <div class="sidebar-logo" style="background:linear-gradient(135deg,var(--red),var(--pink))">BP</div>
+      <div class="sidebar-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="sidebar-label">Overview</span></div>
+      <div class="sidebar-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span class="sidebar-label">Users</span></div>
+      <div class="sidebar-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="sidebar-label">Fraud Alerts</span></div>
+      <div class="sidebar-item" style="margin-top:auto" onclick="showPage('landing')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="sidebar-label">Logout</span></div>
+    </nav>
+    <div class="main-content scroll-content">
+      <div class="topbar">
+        <div><div class="topbar-title">Admin Panel</div><div style="font-size:12px;color:var(--text3)">Super Administrator View</div></div>
+        <div class="topbar-actions">
+          <span class="badge badge-red">⚠️ 3 Fraud Alerts</span>
+          <div class="avatar" style="background:linear-gradient(135deg,var(--red),var(--pink));color:#fff;cursor:pointer;width:34px;height:34px;font-size:12px">AD</div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="grid-4">
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Total Users</div><div class="stat-number">12,847</div><div style="font-size:12px;color:#34D399;margin-top:6px">↑ +284 this week</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Platform Revenue</div><div class="stat-number" style="background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">₹94.2L</div><div style="font-size:12px;color:#34D399;margin-top:6px">↑ +18% MoM</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Pending Withdrawals</div><div class="stat-number" style="background:linear-gradient(135deg,#fff,var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">₹3.4L</div><div style="font-size:12px;color:var(--text3);margin-top:6px">48 pending</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Active Campaigns</div><div class="stat-number" style="background:linear-gradient(135deg,#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">28</div><div style="font-size:12px;color:var(--text3);margin-top:6px">Across 340 companies</div></div>
+        </div>
+      </div>
+
+      <!-- Fraud Alerts -->
+      <div class="dash-section" style="padding-top:0">
+        <div style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--red)">⚠️ Fraud Alerts</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:12px">
+            <div class="avatar" style="background:rgba(239,68,68,0.15);color:#F87171;width:32px;height:32px;font-size:11px">RK</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Rohit Kumar — Duplicate Bug Submissions</div><div style="font-size:12px;color:var(--text3)">Submitted 14 identical bugs in 6 campaigns · Possible automated farming</div></div>
+            <div style="display:flex;gap:8px"><button class="btn btn-danger btn-sm">Ban</button><button class="btn btn-ghost btn-sm">Review</button></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:12px">
+            <div class="avatar" style="background:rgba(245,158,11,0.15);color:#FCD34D;width:32px;height:32px;font-size:11px">AT</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Ananya Trivedi — Suspicious Withdrawal Pattern</div><div style="font-size:12px;color:var(--text3)">3 withdrawals over ₹50k in last 48 hours from new account</div></div>
+            <div style="display:flex;gap:8px"><button class="btn btn-danger btn-sm">Freeze</button><button class="btn btn-ghost btn-sm">Review</button></div>
+          </div>
+        </div>
+
+        <!-- User Table -->
+        <div style="font-size:15px;font-weight:700;margin-bottom:12px">User Management</div>
+        <div class="glass" style="overflow:hidden">
+          <table class="table">
+            <thead><tr><th>User</th><th>Role</th><th>Joined</th><th>Bugs</th><th>Earnings</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(59,130,246,0.15);color:var(--blue2);font-size:11px">AR</div><div><div style="font-size:13px;font-weight:500">Arjun Reddy</div><div style="font-size:11px;color:var(--text3)">arjun@example.com</div></div></div></td><td><span class="badge badge-blue">Tester</span></td><td style="color:var(--text3);font-size:12px">Jan 12, 2025</td><td style="font-weight:600">183</td><td style="color:#34D399;font-weight:600">₹42,840</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:11px">Manage</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(16,185,129,0.15);color:#34D399;font-size:11px">PS</div><div><div style="font-size:13px;font-weight:500">Priya Sharma</div><div style="font-size:11px;color:var(--text3)">priya@example.com</div></div></div></td><td><span class="badge badge-blue">Tester</span></td><td style="color:var(--text3);font-size:12px">Dec 4, 2024</td><td style="font-weight:600">241</td><td style="color:#34D399;font-weight:600">₹68,200</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:11px">Manage</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(6,182,212,0.15);color:#67E8F9;font-size:11px">SW</div><div><div style="font-size:13px;font-weight:500">Swiggy Tech</div><div style="font-size:11px;color:var(--text3)">admin@swiggy.in</div></div></div></td><td><span class="badge badge-purple">Company</span></td><td style="color:var(--text3);font-size:12px">Nov 20, 2024</td><td style="font-weight:600">—</td><td style="color:var(--amber);font-weight:600">₹1.8L</td><td><span class="badge badge-green">Active</span></td><td><button class="btn btn-ghost btn-sm" style="font-size:11px">Manage</button></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="background:rgba(239,68,68,0.15);color:#F87171;font-size:11px">RK</div><div><div style="font-size:13px;font-weight:500">Rohit Kumar</div><div style="font-size:11px;color:var(--text3)">rohit@mail.com</div></div></div></td><td><span class="badge badge-blue">Tester</span></td><td style="color:var(--text3);font-size:12px">Mar 2, 2025</td><td style="font-weight:600">14</td><td style="color:#34D399;font-weight:600">₹2,100</td><td><span class="badge badge-amber">Flagged</span></td><td><button class="btn btn-danger btn-sm" style="font-size:11px">Ban</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= WALLET PAGE ========================= -->
+<div id="page-wallet" class="page">
+  <div class="app-layout">
+    <nav class="sidebar">
+      <div class="sidebar-logo" onclick="showPage('landing')">BP</div>
+      <div class="sidebar-item" onclick="showPage('tester')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="sidebar-label">Dashboard</span></div>
+      <div class="sidebar-item" onclick="showPage('bug-submit')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg><span class="sidebar-label">Submit Bug</span></div>
+      <div class="sidebar-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg><span class="sidebar-label">Wallet</span></div>
+      <div class="sidebar-item" onclick="showPage('leaderboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg><span class="sidebar-label">Leaderboard</span></div>
+      <div class="sidebar-item" style="margin-top:auto" onclick="showPage('landing')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="sidebar-label">Logout</span></div>
+    </nav>
+    <div class="main-content scroll-content">
+      <div class="topbar">
+        <div class="topbar-title">Wallet</div>
+        <div class="topbar-actions"><div class="avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;width:34px;height:34px;font-size:12px">AR</div></div>
+      </div>
+      <div class="dash-section">
+        <!-- Balance Card -->
+        <div class="wallet-card" style="margin-bottom:20px;position:relative;overflow:hidden">
+          <div class="orb orb-blue" style="width:300px;height:300px;top:-100px;right:-80px;animation:glow-pulse 3s infinite"></div>
+          <div style="position:relative;z-index:1">
+            <div style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Total Balance</div>
+            <div class="wallet-balance">₹42,840.00</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">+ ₹1,600 pending approval</div>
+            <div style="display:flex;gap:12px;margin-top:20px">
+              <button class="btn btn-primary" onclick="openWithdrawModal()">💳 Withdraw via UPI</button>
+              <button class="btn btn-ghost">📊 View History</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid-3" style="margin-bottom:24px">
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px">Total Earned</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#34D399">₹52,440</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px">Total Withdrawn</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--blue2)">₹9,600</div></div>
+          <div class="stat-card"><div style="font-size:12px;color:var(--text3);margin-bottom:4px">Pending Review</div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--amber)">₹1,600</div></div>
+        </div>
+
+        <!-- Transaction History -->
+        <div style="font-size:15px;font-weight:700;margin-bottom:14px">Transaction History</div>
+        <div class="glass" style="overflow:hidden">
+          <table class="table">
+            <thead><tr><th>Description</th><th>Campaign</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-size:13px">Bug Bounty — Critical crash fix</td><td style="color:var(--text3);font-size:12px">Swiggy Instamart</td><td style="color:var(--text3);font-size:12px">Today, 2:14 PM</td><td style="color:#34D399;font-weight:600">+₹2,000</td><td><span class="badge badge-green">Paid</span></td></tr>
+              <tr><td style="font-size:13px">Bug Bounty — UX layout issue</td><td style="color:var(--text3);font-size:12px">Razorpay</td><td style="color:var(--text3);font-size:12px">Today, 10:30 AM</td><td style="color:#34D399;font-weight:600">+₹800</td><td><span class="badge badge-amber">Pending</span></td></tr>
+              <tr><td style="font-size:13px">UPI Withdrawal</td><td style="color:var(--text3);font-size:12px">—</td><td style="color:var(--text3);font-size:12px">May 24, 3:00 PM</td><td style="color:#F87171;font-weight:600">−₹5,000</td><td><span class="badge badge-green">Processed</span></td></tr>
+              <tr><td style="font-size:13px">Bug Bounty — Auth bypass</td><td style="color:var(--text3);font-size:12px">CRED App</td><td style="color:var(--text3);font-size:12px">May 23, 11:00 AM</td><td style="color:#34D399;font-weight:600">+₹5,000</td><td><span class="badge badge-green">Paid</span></td></tr>
+              <tr><td style="font-size:13px">Bug Bounty — Payment failure loop</td><td style="color:var(--text3);font-size:12px">PhonePe</td><td style="color:var(--text3);font-size:12px">May 22, 4:20 PM</td><td style="color:#34D399;font-weight:600">+₹3,200</td><td><span class="badge badge-green">Paid</span></td></tr>
+              <tr><td style="font-size:13px">UPI Withdrawal</td><td style="color:var(--text3);font-size:12px">—</td><td style="color:var(--text3);font-size:12px">May 18, 9:00 AM</td><td style="color:#F87171;font-weight:600">−₹4,600</td><td><span class="badge badge-green">Processed</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= LEADERBOARD PAGE ========================= -->
+<div id="page-leaderboard" class="page">
+  <div class="app-layout">
+    <nav class="sidebar">
+      <div class="sidebar-logo" onclick="showPage('landing')">BP</div>
+      <div class="sidebar-item" onclick="showPage('tester')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="sidebar-label">Dashboard</span></div>
+      <div class="sidebar-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg><span class="sidebar-label">Leaderboard</span></div>
+      <div class="sidebar-item" onclick="showPage('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg><span class="sidebar-label">Wallet</span></div>
+      <div class="sidebar-item" style="margin-top:auto" onclick="showPage('landing')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="sidebar-label">Logout</span></div>
+    </nav>
+    <div class="main-content scroll-content">
+      <div class="topbar">
+        <div class="topbar-title">🏆 Global Leaderboard</div>
+        <div class="topbar-actions">
+          <select class="input" style="width:auto;padding:6px 12px;font-size:13px"><option>All Time</option><option>This Month</option><option>This Week</option></select>
+        </div>
+      </div>
+      <div class="dash-section">
+        <!-- Top 3 Podium -->
+        <div style="display:flex;justify-content:center;align-items:flex-end;gap:16px;margin-bottom:36px;padding:20px 0">
+          <!-- 2nd -->
+          <div style="text-align:center;flex:1;max-width:160px">
+            <div style="font-size:32px margin-bottom:8px">🥈</div>
+            <div class="avatar" style="background:linear-gradient(135deg,#C0C0C0,#a0a0a0);color:#fff;width:56px;height:56px;font-size:16px;margin:0 auto 8px">PS</div>
+            <div style="font-weight:700;font-size:14px">Priya Sharma</div>
+            <div style="font-size:12px;color:var(--text3)">Pune</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#C0C0C0;margin-top:4px">24,180 XP</div>
+            <div style="padding:40px 0 0;border-radius:12px 12px 0 0;background:rgba(192,192,192,0.08);border:1px solid rgba(192,192,192,0.15);margin-top:12px;height:80px;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font-size:24px">#2</div>
+          </div>
+          <!-- 1st -->
+          <div style="text-align:center;flex:1;max-width:180px">
+            <div style="font-size:36px;margin-bottom:8px">👑</div>
+            <div class="avatar" style="background:linear-gradient(135deg,#FFD700,#FFA500);color:#fff;width:68px;height:68px;font-size:20px;margin:0 auto 8px;box-shadow:0 0 20px rgba(255,215,0,0.4)">KM</div>
+            <div style="font-weight:700;font-size:16px">Karan Mehta</div>
+            <div style="font-size:12px;color:var(--text3)">Mumbai</div>
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#FFD700;margin-top:4px">31,540 XP</div>
+            <div style="padding:40px 0 0;border-radius:12px 12px 0 0;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);margin-top:12px;height:120px;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font-size:28px">#1</div>
+          </div>
+          <!-- 3rd -->
+          <div style="text-align:center;flex:1;max-width:160px">
+            <div style="font-size:32px;margin-bottom:8px">🥉</div>
+            <div class="avatar" style="background:linear-gradient(135deg,#CD7F32,#A0522D);color:#fff;width:48px;height:48px;font-size:14px;margin:0 auto 8px">VP</div>
+            <div style="font-weight:700;font-size:14px">Vikash Patil</div>
+            <div style="font-size:12px;color:var(--text3)">Bangalore</div>
+            <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#CD7F32;margin-top:4px">19,920 XP</div>
+            <div style="padding:40px 0 0;border-radius:12px 12px 0 0;background:rgba(205,127,50,0.08);border:1px solid rgba(205,127,50,0.15);margin-top:12px;height:60px;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font-size:24px">#3</div>
+          </div>
+        </div>
+
+        <!-- List -->
+        <div>
+          <div class="lb-row" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+            <div class="lb-rank" style="color:var(--blue2)">#4</div>
+            <div class="avatar" style="background:rgba(59,130,246,0.2);color:var(--blue2)">RV</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:14px">Rahul Verma</div><div style="font-size:12px;color:var(--text3)">Delhi · 🏅 Security Ace · ⚡ Speed Runner</div></div>
+            <div style="display:flex;gap:8px;align-items:center"><span class="badge badge-blue">167 bugs</span><div class="lb-xp">18,440 XP</div></div>
+          </div>
+          <div class="lb-row" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+            <div class="lb-rank" style="color:var(--purple2)">#5</div>
+            <div class="avatar" style="background:rgba(139,92,246,0.2);color:var(--purple2)">SN</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:14px">Sneha Nair</div><div style="font-size:12px;color:var(--text3)">Chennai · 🔥 Critical Finder</div></div>
+            <div style="display:flex;gap:8px;align-items:center"><span class="badge badge-purple">142 bugs</span><div class="lb-xp">16,800 XP</div></div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank" style="color:var(--text3)">#6</div>
+            <div class="avatar" style="background:rgba(16,185,129,0.2);color:#34D399">AJ</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:14px">Aakash Joshi</div><div style="font-size:12px;color:var(--text3)">Pune · 💯 100 Bugs</div></div>
+            <div style="display:flex;gap:8px;align-items:center"><span class="badge badge-green">128 bugs</span><div class="lb-xp">14,220 XP</div></div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank" style="color:var(--text3)">#7</div>
+            <div class="avatar" style="background:rgba(6,182,212,0.2);color:#67E8F9">DG</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:14px">Deepika Gupta</div><div style="font-size:12px;color:var(--text3)">Hyderabad · ✅ Verified Pro</div></div>
+            <div style="display:flex;gap:8px;align-items:center"><span class="badge badge-cyan">115 bugs</span><div class="lb-xp">12,900 XP</div></div>
+          </div>
+          <!-- You -->
+          <div class="lb-row glow-border" style="border-color:rgba(59,130,246,0.4)">
+            <div class="lb-rank" style="color:var(--blue)">⭐ #8</div>
+            <div class="avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff">AR</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:14px">Arjun Reddy <span style="font-size:11px;color:var(--blue2);font-weight:400">(You)</span></div><div style="font-size:12px;color:var(--text3)">Hyderabad · 🏆 Top 10 · 🔒 Security Ace</div></div>
+            <div style="display:flex;gap:8px;align-items:center"><span class="badge badge-blue">183 bugs</span><div class="lb-xp" style="color:var(--blue2)">8,420 XP</div></div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank" style="color:var(--text3)">#9</div>
+            <div class="avatar" style="background:rgba(245,158,11,0.2);color:#FCD34D">MT</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:14px">Meera Trivedi</div><div style="font-size:12px;color:var(--text3)">Ahmedabad</div></div>
+            <div style="display:flex;gap:8px;align-items:center"><span class="badge badge-amber">97 bugs</span><div class="lb-xp">7,890 XP</div></div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank" style="color:var(--text3)">#10</div>
+            <div class="avatar" style="background:rgba(236,72,153,0.2);color:#F9A8D4">LK</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:14px">Lokesh Kumar</div><div style="font-size:12px;color:var(--text3)">Jaipur</div></div>
+            <div style="display:flex;gap:8px;align-items:center"><span class="badge badge-red">88 bugs</span><div class="lb-xp">6,640 XP</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= BUG SUBMISSION PAGE ========================= -->
+<div id="page-bug-submit" class="page">
+  <div class="app-layout">
+    <nav class="sidebar">
+      <div class="sidebar-logo" onclick="showPage('landing')">BP</div>
+      <div class="sidebar-item" onclick="showPage('tester')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="sidebar-label">Dashboard</span></div>
+      <div class="sidebar-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg><span class="sidebar-label">Submit Bug</span></div>
+      <div class="sidebar-item" onclick="showPage('wallet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg><span class="sidebar-label">Wallet</span></div>
+      <div class="sidebar-item" onclick="showPage('leaderboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg><span class="sidebar-label">Leaderboard</span></div>
+      <div class="sidebar-item" style="margin-top:auto" onclick="showPage('landing')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="sidebar-label">Logout</span></div>
+    </nav>
+    <div class="main-content scroll-content">
+      <div class="topbar">
+        <div><div class="topbar-title">Submit a Bug Report</div><div style="font-size:12px;color:var(--text3)">Swiggy Instamart · iOS Campaign</div></div>
+        <div class="topbar-actions"><span class="badge badge-amber">Payout: up to ₹8,000</span></div>
+      </div>
+      <div class="dash-section" style="max-width:780px">
+        <!-- Progress -->
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:28px">
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:24px;height:24px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">1</div><span style="font-size:13px;font-weight:500">Bug Details</span></div>
+          <div style="flex:1;height:2px;background:rgba(255,255,255,0.1)"><div style="height:100%;background:var(--blue);width:50%"></div></div>
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:24px;height:24px;border-radius:50%;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue2)">2</div><span style="font-size:13px;color:var(--text3)">Evidence</span></div>
+          <div style="flex:1;height:2px;background:rgba(255,255,255,0.1)"></div>
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3)">3</div><span style="font-size:13px;color:var(--text3)">Review</span></div>
+        </div>
+
+        <div class="input-group">
+          <label>Bug Title <span style="color:var(--red)">*</span></label>
+          <input type="text" class="input" placeholder="e.g. App crashes when adding item to cart with promo code applied" value="Checkout page crashes on tapping 'Place Order' with COD">
+        </div>
+
+        <div class="grid-2">
+          <div class="input-group">
+            <label>Severity <span style="color:var(--red)">*</span></label>
+            <select class="input">
+              <option>Critical — App unusable / data loss</option>
+              <option>High — Major feature broken</option>
+              <option>Medium — Feature partially broken</option>
+              <option>Low — Minor visual / UX issue</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Bug Type</label>
+            <select class="input">
+              <option>Functional</option>
+              <option>Crash / Freeze</option>
+              <option>UI / Visual</option>
+              <option>Performance</option>
+              <option>Security</option>
+              <option>Accessibility</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="input-group">
+            <label>Device</label>
+            <input type="text" class="input" placeholder="e.g. iPhone 14 Pro" value="iPhone 15 Pro Max">
+          </div>
+          <div class="input-group">
+            <label>OS Version</label>
+            <input type="text" class="input" placeholder="e.g. iOS 17.4.1" value="iOS 17.5">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>App Version</label>
+          <input type="text" class="input" placeholder="e.g. 4.2.1 (build 1204)" value="Swiggy 4.8.3 (build 9842)">
+        </div>
+
+        <div class="input-group">
+          <label>Bug Description <span style="color:var(--red)">*</span></label>
+          <textarea class="input" style="min-height:130px" placeholder="Describe the bug in detail. What happened? What did you expect to happen?">When I add items to cart, apply a promo code, and proceed to checkout selecting Cash on Delivery, the app crashes immediately when tapping "Place Order". This happens 100% of the time. The cart with promo code works fine when paying via UPI.</textarea>
+        </div>
+
+        <div class="input-group">
+          <label>Steps to Reproduce <span style="color:var(--red)">*</span></label>
+          <textarea class="input" style="min-height:130px" placeholder="1. Open the app&#10;2. Add items to cart&#10;3. Tap checkout...">1. Open Swiggy Instamart
+2. Add any 3+ items to cart
+3. Apply promo code "INSTA50"
+4. Tap "Proceed to Checkout"
+5. Select "Cash on Delivery" as payment method
+6. Tap "Place Order"
+7. App crashes immediately to home screen</textarea>
+        </div>
+
+        <div class="input-group">
+          <label>Expected Behavior</label>
+          <input type="text" class="input" placeholder="What should have happened?" value="Order should be placed successfully and confirmation screen should show">
+        </div>
+
+        <!-- Upload Screenshots -->
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px">Screenshots</label>
+          <div class="upload-zone" id="screenshot-zone" ondragover="event.preventDefault();this.classList.add('dragging')" ondragleave="this.classList.remove('dragging')" ondrop="handleDrop(event,'screenshot-zone')" onclick="simulateUpload('screenshot')">
+            <div class="upload-icon">📸</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px">Drop screenshots here or click to upload</div>
+            <div style="font-size:12px;color:var(--text3)">PNG, JPG up to 10MB each · Max 5 files</div>
+            <div id="screenshot-files" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center"></div>
+          </div>
+        </div>
+
+        <!-- Upload Video -->
+        <div style="margin-bottom:24px">
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px">Screen Recording <span class="badge badge-amber" style="font-size:11px">+200 XP bonus</span></label>
+          <div class="upload-zone" id="video-zone" ondragover="event.preventDefault();this.classList.add('dragging')" ondragleave="this.classList.remove('dragging')" onclick="simulateUpload('video')">
+            <div class="upload-icon">🎬</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px">Upload screen recording</div>
+            <div style="font-size:12px;color:var(--text3)">MP4, MOV up to 100MB · Must show steps to reproduce</div>
+            <div id="video-files" style="margin-top:12px"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:12px;margin-bottom:24px">
+          <span style="font-size:20px">🤖</span>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600">AI Pre-screening</div><div style="font-size:12px;color:var(--text3)">Your bug will be validated by AI before reaching the company. This speeds up approval and payout.</div></div>
+          <span class="badge badge-green">Enabled</span>
+        </div>
+
+        <div style="display:flex;gap:12px">
+          <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="showPage('tester')">← Back</button>
+          <button class="btn btn-primary" style="flex:2;justify-content:center;padding:14px" onclick="submitBug()">Submit Bug Report →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= MODALS ========================= -->
+
+<!-- Withdraw Modal -->
+<div class="modal-overlay" id="withdraw-modal" onclick="closeModal('withdraw-modal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('withdraw-modal')">✕</button>
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:40px;margin-bottom:8px">💳</div>
+      <h3 style="font-size:20px">Withdraw via UPI</h3>
+      <p style="color:var(--text2);font-size:13px;margin-top:4px">Available: ₹42,840</p>
+    </div>
+    <div class="input-group"><label>UPI ID</label><input type="text" class="input" value="arjun@upi" placeholder="yourname@upi"></div>
+    <div class="input-group">
+      <label>Amount</label>
+      <input type="text" class="input" value="10000" placeholder="Min ₹100">
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('.modal input')[1].value='5000'">₹5,000</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('.modal input')[1].value='10000'">₹10,000</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('.modal input')[1].value='42840'">Max</button>
+      </div>
+    </div>
+    <div style="padding:12px 14px;background:rgba(255,255,255,0.03);border-radius:10px;margin-bottom:20px;font-size:13px;color:var(--text3)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Amount</span><span style="color:var(--text)">₹10,000</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Platform fee (2%)</span><span style="color:var(--red)">−₹200</span></div>
+      <div class="divider" style="margin:8px 0"></div>
+      <div style="display:flex;justify-content:space-between;font-weight:600"><span>You receive</span><span style="color:#34D399">₹9,800</span></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="processPayment()">Initiate Withdrawal →</button>
+  </div>
+</div>
+
+<!-- Payment Success Modal -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal" style="text-align:center;border-color:rgba(16,185,129,0.3)">
+    <div class="success-icon" style="font-size:60px;margin-bottom:16px">✅</div>
+    <h3 style="font-size:22px;margin-bottom:8px;color:#34D399">Payment Initiated!</h3>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:20px">₹9,800 will be credited to your UPI ID within 2-4 hours.</p>
+    <div style="padding:16px;background:rgba(16,185,129,0.08);border-radius:12px;border:1px solid rgba(16,185,129,0.2);margin-bottom:20px">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px">Transaction ID</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.1em;font-size:14px">BP-TXN-20250528-4821</div>
+    </div>
+    <div style="display:flex;gap:10px;padding:12px 14px;background:rgba(16,185,129,0.05);border-radius:10px;align-items:center;margin-bottom:20px;text-align:left">
+      <span style="font-size:24px">🎉</span>
+      <div><div style="font-size:13px;font-weight:600">+50 XP earned!</div><div style="font-size:12px;color:var(--text3)">Withdrawal milestone unlocked</div></div>
+    </div>
+    <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="closeModal('success-modal')">Close</button>
+  </div>
+</div>
+
+<!-- Campaign Creation Modal -->
+<div class="modal-overlay" id="campaign-modal" onclick="closeModal('campaign-modal')">
+  <div class="modal" style="max-width:520px" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal('campaign-modal')">✕</button>
+    <h3 style="font-size:20px;margin-bottom:4px">Create New Campaign</h3>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:24px">Launch a crowd testing campaign and get bugs found fast.</p>
+    <div class="input-group"><label>Product Name</label><input type="text" class="input" placeholder="e.g. MyApp v2.0"></div>
+    <div class="grid-2">
+      <div class="input-group"><label>Platform</label><select class="input"><option>iOS</option><option>Android</option><option>Web</option><option>All Platforms</option></select></div>
+      <div class="input-group"><label>Testing Type</label><select class="input"><option>Functional</option><option>Security</option><option>Performance</option><option>Full Regression</option></select></div>
+    </div>
+    <div class="input-group"><label>Total Budget (₹)</label><input type="number" class="input" placeholder="Min ₹10,000" value="50000"></div>
+    <div class="input-group"><label>Max Testers</label><input type="number" class="input" placeholder="e.g. 50" value="50"></div>
+    <div class="input-group"><label>Duration</label><select class="input"><option>3 days</option><option selected>7 days</option><option>14 days</option><option>30 days</option></select></div>
+    <div class="input-group"><label>Brief Description</label><textarea class="input" style="min-height:80px" placeholder="What should testers focus on?"></textarea></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;margin-top:4px" onclick="createCampaign()">Launch Campaign →</button>
+  </div>
+</div>
+
+<!-- Bug Submitted Success -->
+<div class="modal-overlay" id="bug-submitted-modal">
+  <div class="modal" style="text-align:center;border-color:rgba(59,130,246,0.3)">
+    <div class="success-icon" style="font-size:56px;margin-bottom:16px">🐛</div>
+    <h3 style="font-size:22px;margin-bottom:8px">Bug Submitted!</h3>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:20px">Your report is being reviewed by our AI. You'll get a notification once approved.</p>
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <div style="flex:1;padding:14px;background:rgba(59,130,246,0.08);border-radius:12px;border:1px solid rgba(59,130,246,0.2)"><div style="font-size:11px;color:var(--text3)">Report ID</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px">#BUG-8241</div></div>
+      <div style="flex:1;padding:14px;background:rgba(245,158,11,0.08);border-radius:12px;border:1px solid rgba(245,158,11,0.2)"><div style="font-size:11px;color:var(--text3)">Potential Payout</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--amber)">up to ₹4,000</div></div>
+    </div>
+    <div style="display:flex;gap:10px;padding:12px 14px;background:rgba(139,92,246,0.05);border-radius:10px;align-items:center;margin-bottom:20px;text-align:left">
+      <span style="font-size:24px">⚡</span>
+      <div><div style="font-size:13px;font-weight:600">+150 XP awarded!</div><div style="font-size:12px;color:var(--text3)">Bonus +200 XP if video evidence is approved</div></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeModal('bug-submitted-modal');showPage('tester')">Dashboard</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="closeModal('bug-submitted-modal')">Submit Another</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO NAV BAR (fixed bottom) -->
+<div style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300;display:flex;gap:6px;padding:10px 14px;background:rgba(5,8,16,0.95);backdrop-filter:blur(30px);border:1px solid var(--border2);border-radius:50px;flex-wrap:nowrap;overflow-x:auto;max-width:calc(100vw - 40px)">
+  <span style="font-size:10px;font-weight:700;color:var(--text3);padding:0 6px;align-self:center;letter-spacing:0.06em;white-space:nowrap">DEMO:</span>
+  <button onclick="showPage('landing')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Landing</button>
+  <button onclick="showPage('login')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Login</button>
+  <button onclick="showPage('signup')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Signup</button>
+  <button onclick="showPage('tester')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Tester Dash</button>
+  <button onclick="showPage('company')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Company Dash</button>
+  <button onclick="showPage('admin')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Admin</button>
+  <button onclick="showPage('wallet')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Wallet</button>
+  <button onclick="showPage('leaderboard')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Leaderboard</button>
+  <button onclick="showPage('bug-submit')" class="btn btn-ghost btn-sm" style="white-space:nowrap;font-size:11px;padding:6px 12px">Bug Submit</button>
+</div>
+
+<script>
+// ===== PAGE NAVIGATION =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const p = document.getElementById('page-' + name);
+  if (p) { p.classList.add('active'); window.scrollTo(0,0); }
+}
+
+function setActiveNav(el, page) {
+  const sidebar = el.closest('.sidebar');
+  sidebar.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== AUTH FLOWS =====
+function doLogin() {
+  // Animate button
+  event.target.textContent = '⏳ Signing in…';
+  event.target.disabled = true;
+  setTimeout(() => { showPage('tester'); }, 900);
+}
+
+function doSignup() {
+  const role = document.querySelector('.role-option.selected');
+  event.target.textContent = '⏳ Creating account…';
+  event.target.disabled = true;
+  setTimeout(() => {
+    if (role && role.id === 'role-company') showPage('company');
+    else showPage('tester');
+  }, 900);
+}
+
+function selectRole(role) {
+  document.querySelectorAll('.role-option').forEach(r => r.classList.remove('selected'));
+  document.getElementById('role-' + role).classList.add('selected');
+}
+
+// ===== MODALS =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function openWithdrawModal() { openModal('withdraw-modal'); }
+function openCampaignModal() { openModal('campaign-modal'); }
+
+// ===== PAYMENT FLOW =====
+function processPayment() {
+  closeModal('withdraw-modal');
+  setTimeout(() => openModal('success-modal'), 300);
+}
+
+function createCampaign() {
+  closeModal('campaign-modal');
+  // Show a quick toast
+  showToast('Campaign created! Going live in 2 hours.', 'green');
+}
+
+// ===== BUG SUBMISSION =====
+function submitBug() {
+  const btn = event.target;
+  btn.textContent = '🤖 AI Validating…';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '✅ Validated!';
+    setTimeout(() => {
+      openModal('bug-submitted-modal');
+      btn.textContent = 'Submit Bug Report →';
+      btn.disabled = false;
+    }, 600);
+  }, 1400);
+}
+
+// ===== FILE UPLOAD SIMULATION =====
+function simulateUpload(type) {
+  const fakeFiles = type === 'screenshot' 
+    ? ['screenshot_1.png', 'screenshot_2.png']
+    : ['screen_recording.mp4'];
+  
+  const zone = document.getElementById(type + '-zone');
+  const filesDiv = document.getElementById(type + '-files');
+  
+  zone.style.borderColor = 'rgba(16,185,129,0.5)';
+  zone.style.background = 'rgba(16,185,129,0.05)';
+  
+  fakeFiles.forEach((f, i) => {
+    setTimeout(() => {
+      const el = document.createElement('span');
+      el.className = 'badge badge-green';
+      el.style.fontSize = '12px';
+      el.textContent = '✓ ' + f;
+      filesDiv.appendChild(el);
+    }, i * 300);
+  });
+}
+
+function handleDrop(e, zoneId) {
+  e.preventDefault();
+  document.getElementById(zoneId).classList.remove('dragging');
+  simulateUpload(zoneId === 'screenshot-zone' ? 'screenshot' : 'video');
+}
+
+// ===== TOAST NOTIFICATION =====
+function showToast(msg, color = 'blue') {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;top:24px;right:24px;z-index:999;padding:14px 20px;border-radius:12px;background:rgba(5,8,16,0.95);border:1px solid rgba(${color==='green'?'16,185,129':'59,130,246'},0.4);color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;backdrop-filter:blur(20px);animation:fadeIn 0.3s ease;max-width:320px`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => {
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  }
+});
+
+// ===== MICRO INTERACTIONS =====
+// Animate stat numbers on page load
+function animateNumbers() {
+  document.querySelectorAll('.stat-number').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(8px)';
+    setTimeout(() => {
+      el.style.transition = 'all 0.5s ease';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }, Math.random() * 300);
+  });
+}
+
+// Add hover glow to task cards
+document.querySelectorAll('.task-card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    card.style.boxShadow = '0 0 20px rgba(59,130,246,0.15)';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.boxShadow = '';
+  });
+});
+
+// Observe page changes and re-animate
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach(m => {
+    if (m.target.classList.contains('active')) animateNumbers();
+  });
+});
+document.querySelectorAll('.page').forEach(p => observer.observe(p, { attributes: true }));
+
+// Initial animation
+animateNumbers();
+</script>
+</body>
+</html>
