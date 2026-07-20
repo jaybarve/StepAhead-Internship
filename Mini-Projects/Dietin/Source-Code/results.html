@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DietIn — Your Diet Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair Display:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">DietIn<span>.</span></a>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="generator.html" class="nav-btn active">Diet Generator</a>
+                <a href="support.html" class="nav-btn">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="gen-wrapper">
+            <div id="dashboard-container" class="dashboard">
+                <div class="dashboard-diet">
+                    <div class="dash-header">
+                        <h2 class="dash-title">Your Weekly Diet Plan</h2>
+                        <div class="nutrition-badges" id="nutrition-summary"></div>
+                    </div>
+                    <div class="meals-scroll" id="meals-container"></div>
+                </div>
+                
+                <div class="dashboard-cart">
+                    <h2 class="dash-title" style="margin-bottom:1.25rem;">Grocery Cart</h2>
+                    <div class="cart-scroll" id="cart-container"></div>
+                    <hr class="cart-divider">
+                    <div class="cart-total-row">
+                        <span class="cart-total-label">Estimated Total</span>
+                        <span class="cart-total-value" id="total-cost"></span>
+                    </div>
+                    <a href="generator.html" class="btn-secondary">Modify Requirements</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="index.html" class="bottom-nav-btn">Home</a>
+            <a href="generator.html" class="bottom-nav-btn active">Generator</a>
+            <a href="support.html" class="bottom-nav-btn">Support</a>
+        </div>
+    </nav>
+
+    <footer class="footer">
+        <strong>DietIn</strong> &nbsp;&mdash;&nbsp; Intelligent Diet Planning &amp; Grocery Automation &nbsp;&mdash;&nbsp; 2026
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('api/generate-diet.php', { method: 'GET' });
+                const result = await response.json();
+
+                if (result.success) {
+                    renderDashboard(result.data);
+                } else {
+                    window.location.href = 'generator.html';
+                }
+            } catch (err) {
+                window.location.href = 'generator.html';
+            }
+        });
+
+        function renderDashboard(data) {
+            document.getElementById('nutrition-summary').innerHTML =
+                '<span class="nutrition-badge">' + data.nutritionSummary.calories + ' kcal / day</span>' +
+                '<span class="nutrition-badge">Protein: ' + data.nutritionSummary.protein + '</span>' +
+                '<span class="nutrition-badge">Carbs: ' + data.nutritionSummary.carbs + '</span>';
+
+            document.getElementById('total-cost').textContent = 'Rs.' + data.totalEstimatedCost;
+
+            document.getElementById('meals-container').innerHTML = data.mealSchedule.map(function(day) {
+                return '<div class="day-block"><p class="day-label">' + day.day + '</p><div class="meals-row">' +
+                    day.meals.map(function(m) {
+                        return '<div class="meal-card"><p class="meal-type">' + m.name + '</p><p class="meal-items">' + m.items + '</p><p class="meal-cal">' + m.calories + ' cal</p></div>';
+                    }).join('') + '</div></div>';
+            }).join('');
+
+            document.getElementById('cart-container').innerHTML = data.groceryCart.map(function(item) {
+                return '<div class="cart-item"><div><p class="cart-item-name">' + item.item + '</p><p class="cart-item-qty">' + item.quantity + '</p></div><span class="cart-item-price">Rs.' + item.estimatedCost + '</span></div>';
+            }).join('');
+        }
+    </script>
+</body>
+</html>
