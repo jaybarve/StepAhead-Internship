@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DietIn — Configure Plan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">DietIn<span>.</span></a>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-btn">Home</a>
+                <a href="generator.html" class="nav-btn active">Diet Generator</a>
+                <a href="support.html" class="nav-btn">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="gen-wrapper">
+            <div class="gen-header">
+                <span class="section-eyebrow">Diet Generator</span>
+                <h2>Configure Your Plan</h2>
+            </div>
+
+            <div class="form-card">
+                <form id="diet-form">
+                    <div class="form-group">
+                        <label for="budget">Weekly Budget (INR)</label>
+                        <input type="text" id="budget" value="1500" placeholder="e.g. 1500">
+                    </div>
+                    <div class="form-group">
+                        <label for="goal">Fitness Goal</label>
+                        <select id="goal">
+                            <option>Muscle Gain</option>
+                            <option>Weight Loss</option>
+                            <option>Healthy Lifestyle</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dietPreference">Diet Preference</label>
+                        <select id="dietPreference">
+                            <option>Vegetarian</option>
+                            <option>Non-Vegetarian</option>
+                            <option>Vegan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="likes">Preferred Foods <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--neutral-500);font-size:0.75rem">(comma separated)</span></label>
+                        <input type="text" id="likes" value="Paneer, Oats, Milk, Bananas" placeholder="e.g. Paneer, Oats, Bananas">
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn-submit">Generate Diet Plan</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="index.html" class="bottom-nav-btn">Home</a>
+            <a href="generator.html" class="bottom-nav-btn active">Generator</a>
+            <a href="support.html" class="bottom-nav-btn">Support</a>
+        </div>
+    </nav>
+
+    <footer class="footer">
+        <strong>DietIn</strong> &nbsp;&mdash;&nbsp; Intelligent Diet Planning &amp; Grocery Automation &nbsp;&mdash;&nbsp; 2026
+    </footer>
+
+    <script>
+        document.getElementById('diet-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.textContent = 'Generating your plan...';
+
+            const payload = {
+                budget: document.getElementById('budget').value,
+                goal: document.getElementById('goal').value,
+                dietPreference: document.getElementById('dietPreference').value,
+                likes: document.getElementById('likes').value.split(',').map(i => i.trim())
+            };
+
+            try {
+                const response = await fetch('api/generate-diet.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    window.location.href = 'results.html';
+                } else {
+                    alert('Error: ' + result.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Generate Diet Plan';
+                }
+            } catch (err) {
+                alert('Unable to reach the diet generation service. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Generate Diet Plan';
+            }
+        });
+    </script>
+</body>
+</html>
